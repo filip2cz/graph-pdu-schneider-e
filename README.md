@@ -1,5 +1,5 @@
 # graph-pdu-schneider-e
-Automation of graphing energy usage etc. from PDU of Schneider Electric.
+Automation of graphing energy usage etc. from the PDU of Schneider Electric.
 
 ## Something about versions:
 
