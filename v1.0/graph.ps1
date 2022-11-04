@@ -13,7 +13,16 @@ $user = "admin"
 
 echo "Graph from PDU Schneider v1.0"
 echo "created by Filip Komárek"
-echo "This version downloading log from PDU. If you want use server to periodic downloading logs for loger time, use v2.0."
+echo ""
+echo "This version downloading log directly from PDU. If you want use server to periodic downloading logs for loger time, use v2.0."
+echo ""
+
+if ($host.Version.Major -lt 7){
+    echo ""
+    echo "This script is created for Powershell 7+."
+    echo "The script may still work, but problems may occur."
+    echo ""
+}
 
 $tmpFile1 = New-TemporaryFile
 Remove-Item -path "$($ENV:Temp)\$($tmpFile1.Name)" -force
@@ -70,8 +79,12 @@ $Excel = New-Object -ComObject "Excel.Application"
 $Excel.Visible = $true
 $workbook = $Excel.Workbooks.Open("$($ENV:Temp)\$($tmpFile3)")
 
-#repair numbers and create graph
-$Excel.Run("macro")
+#repair numbers
+#$Excel.Run("C:\Users\fkomarek\Git\graph-pdu-schneider-e\v1.0\repair_numbers.bas")
+$Excel.Run('Columns("C:AD").Select')
+
+#create graph
+#$Excel.Run("macro")
 
 # TMP files
 # $tmpFile1.Name = original downloaded file
