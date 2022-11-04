@@ -11,6 +11,10 @@ $user = "admin"
 
 #script
 
+echo "Graph from PDU Schneider v1.0"
+echo "created by Filip Komárek"
+echo "This version downloading log from PDU. If you want use server to periodic downloading logs for loger time, use v2.0."
+
 $tmpFile1 = New-TemporaryFile
 Remove-Item -path "$($ENV:Temp)\$($tmpFile1.Name)" -force
 
@@ -65,9 +69,9 @@ Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 12 | Out-File
 $Excel = New-Object -ComObject "Excel.Application"
 $Excel.Visible = $true
 $workbook = $Excel.Workbooks.Open("$($ENV:Temp)\$($tmpFile3)")
-#https://www.automateexcel.com/vba/format-numbers/
-$Range = $Sheet.Range("C3:C300")
-$Range.NumberFormat = "#,##0.00"
+
+#repair numbers and create graph
+$Excel.Run("macro")
 
 # TMP files
 # $tmpFile1.Name = original downloaded file
@@ -79,8 +83,7 @@ if ($debug){
     echo "$($ENV:Temp)\$($tmpFile2.Name)"
     echo "$($ENV:Temp)\$($tmpFile3)"
 
-    $running = $true
-    $exit = Read-Host -Prompt 'Press ENTER to exit and delete files'
+    $exit = Read-Host -Prompt 'Press ENTER to exit and delete temp files'
 }
 
 if ($delete_tmp_files){
