@@ -3,8 +3,8 @@ Automation of graphing energy usage etc. from the PDU of Schneider Electric.
 
 ## Something about versions:
 
-### v1.X
-This version downloads the data directly from the PDU and makes a graph from it.
+### One-time logging
+It connects to the server once, downloads the log and makes a graph. Suitable for one-off or regular runs on a personal computer.
 
-### v2.X
-This version has 2 parts: server and client. The server periodically downloads the log from the PDU, which makes it possible to make graphs over a longer period without losing precision. The client then downloads the data from the server and makes a graph from it.
+### Periodic logging
+It downloads the log at regular itervals, making it possible to make longer-term graphs. Suitable for constant running on servers.
