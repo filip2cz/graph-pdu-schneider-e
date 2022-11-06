@@ -1,6 +1,6 @@
 #config
 $debug = $true
-$delete_tmp_files = $true
+$delete_tmp_files = $false
 $use_ssh = $false #if false, use ftp to transfer files from server
 $ask_for_path = $false #ask for path, or use path from config
 $path = "/data.txt"
@@ -14,7 +14,7 @@ $user = "admin"
 echo "Graph from PDU Schneider v1.0"
 echo "created by Filip Komárek"
 echo ""
-echo "This version downloading log directly from PDU. If you want use server to periodic downloading logs for loger time, use v2.0."
+echo "This version downloading log directly from PDU. If you want use server to periodic downloading logs for longer time, use periodic_logging version."
 echo ""
 
 if ($host.Version.Major -lt 7){
@@ -23,6 +23,8 @@ if ($host.Version.Major -lt 7){
     echo "The script may still work, but problems may occur."
     echo ""
 }
+
+# tmp files for everything
 
 $tmpFile1 = New-TemporaryFile
 Remove-Item -path "$($ENV:Temp)\$($tmpFile1.Name)" -force
@@ -33,6 +35,24 @@ Remove-Item -path "$($ENV:Temp)\$($tmpFile2.Name)" -force
 $tmpFile3 = New-TemporaryFile
 Remove-Item -path "$($ENV:Temp)\$($tmpFile3.Name)" -force
 $tmpFile3 = "$($tmpFile3.Name).csv"
+
+# tmp files for every one RPDU
+
+$tmpFile_RPDU1 = New-TemporaryFile
+Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU1.Name)" -force
+$tmpFile_RPDU1 = "$($tmpFile_RPDU1.Name).csv"
+
+$tmpFile_RPDU2 = New-TemporaryFile
+Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU2.Name)" -force
+$tmpFile_RPDU2 = "$($tmpFile_RPDU2.Name).csv"
+
+$tmpFile_RPDU3 = New-TemporaryFile
+Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU3.Name)" -force
+$tmpFile_RPDU3 = "$($tmpFile_RPDU3.Name).csv"
+
+$tmpFile_RPDU4 = New-TemporaryFile
+Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU4.Name)" -force
+$tmpFile_RPDU4 = "$($tmpFile_RPDU4.Name).csv"
 
 if ($use_ssh){
     if ($use_config){
@@ -67,41 +87,84 @@ else{
 }
 
 #delete header
-Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 12 | Out-File "$($ENV:Temp)\$($tmpFile2.Name)"
+Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 14 | Out-File "$($ENV:Temp)\$($tmpFile2.Name)"
 
 #convert to csv
 #https://forum.uipath.com/t/how-to-use-power-shell-to-change-tab-to/9610/2
 (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($ENV:Temp)\$($tmpFile3)"
 
-#excel part
-#https://4sysops.com/archives/excel-macros-with-powershell/
-$Excel = New-Object -ComObject "Excel.Application"
-$Excel.Visible = $true
-$workbook = $Excel.Workbooks.Open("$($ENV:Temp)\$($tmpFile3)")
+#sort datas to RPDUs
+$currentLine = 0
+$totalLines = (Get-Content "$($ENV:Temp)\$($tmpFile3)").Length
+if ($debug){
+    echo "totalLines = $($totalLines)"
+}
 
-#repair numbers
-#$Excel.Run("C:\Users\fkomarek\Git\graph-pdu-schneider-e\v1.0\repair_numbers.bas")
-$Excel.Run('Columns("C:AD").Select')
+echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU1)"
+echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU2)"
+echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU3)"
+echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU4)"
 
-#create graph
-#$Excel.Run("macro")
+echo "Splitting RPDUs into separate files."
+
+$currentPercentage = 0
+$nextPercentage = 0
+$tenPercent = $totalLines / 10
+while ($currentLine -lt $totalLines){
+    if ($debug){
+        echo "currentLine = $($currentLine)"
+    }
+    if ($currentLine -eq $nextPercentage){
+        echo "$($currentPercentage) %"
+        $currentPercentage = $currentPercentage + 10
+        $nextPercentage = $nextPercentage + $tenPercent
+    }
+    $currentData = Get-Content "$($ENV:Temp)\$($tmpFile3)" | Select -Index $currentLine
+    $array = $currentData-split ";"
+    if ($array.Length -ne 31){
+        echo "Warning: There is something bad about that data.txt file, but lets try continue anyway..."
+    }
+
+    echo "$($array[0]);$($array[1]);$($array[2]);$($array[3]);$($array[4]);$($array[7]);$($array[8]);" >> "$($ENV:Temp)\$($tmpFile_RPDU1)"
+    echo "$($array[0]);$($array[1]);$($array[9]);$($array[10]);$($array[11]);$($array[14]);$($array[15]);" >> "$($ENV:Temp)\$($tmpFile_RPDU2)"
+    echo "$($array[0]);$($array[1]);$($array[16]);$($array[17]);$($array[18]);$($array[21]);$($array[22]);" >> "$($ENV:Temp)\$($tmpFile_RPDU3)"
+    echo "$($array[0]);$($array[1]);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" >> "$($ENV:Temp)\$($tmpFile_RPDU4)"
+    $currentLine++
+}
+echo "100 %"
 
 # TMP files
 # $tmpFile1.Name = original downloaded file
 # $tmpFile2.Name = file without first 14 lines
 # $tmpFile3 = csv file
+# tmpFile_RPDU1 = RPDU1
+# tmpFile_RPDU2 = RPDU2
+# tmpFile_RPDU3 = RPDU3
+# tmpFile_RPDU4 = RPDU4
 
 if ($debug){
     echo "$($ENV:Temp)\$($tmpFile1.Name)"
     echo "$($ENV:Temp)\$($tmpFile2.Name)"
     echo "$($ENV:Temp)\$($tmpFile3)"
+    echo "$($ENV:Temp)\$($tmpFile_RPDU1)"
+    echo "$($ENV:Temp)\$($tmpFile_RPDU2)"
+    echo "$($ENV:Temp)\$($tmpFile_RPDU3)"
+    echo "$($ENV:Temp)\$($tmpFile_RPDU4)"
 
-    $exit = Read-Host -Prompt 'Press ENTER to exit and delete temp files'
+    if ($delete_tmp_files){
+        $null = Read-Host -Prompt 'Press ENTER to exit and delete temp files'
+    }
 }
 
 if ($delete_tmp_files){
     Remove-Item -path "$($ENV:Temp)\$($tmpFile1.Name)" -force
     Remove-Item -path "$($ENV:Temp)\$($tmpFile2.Name)" -force
     Remove-Item -path "$($ENV:Temp)\$($tmpFile3)" -force
-    echo "Temp files deleted."
+    Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU1)" -force
+    Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU2)" -force
+    Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU3)" -force
+    Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU4)" -force
+    if ($debug){
+        echo "Temp files deleted."
+    }
 }
