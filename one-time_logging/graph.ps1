@@ -4,6 +4,11 @@ $delete_tmp_files = $false
 $use_ssh = $false #if false, use ftp to transfer files from server
 $ask_for_path = $false #ask for path, or use path from config
 $path = "/data.txt"
+$savePath1 = "C:\Users\fkomarek\Desktop\graph1.png"
+$savePath2 = "C:\Users\fkomarek\Desktop\graph2.png"
+$savePath3 = "C:\Users\fkomarek\Desktop\graph3.png"
+$savePath4 = "C:\Users\fkomarek\Desktop\graph4.png"
+$pythonPartPath = "./python_part/grafovani.py"
 
 $use_config = $true # use config below. Config upper will be used anyway
 $server = "10.17.89.55"
@@ -26,30 +31,30 @@ if ($host.Version.Major -lt 7){
 
 # tmp files for everything
 $tmpFile1 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile1.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile1.Name)" -force
 
 $tmpFile2 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile2.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile2.Name)" -force
 
 $tmpFile3 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile3.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile3.Name)" -force
 $tmpFile3 = "$($tmpFile3.Name).csv"
 
 # tmp files for every one RPDU
 $tmpFile_RPDU1 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU1.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile_RPDU1.Name)" -force
 $tmpFile_RPDU1 = "$($tmpFile_RPDU1.Name).csv"
 
 $tmpFile_RPDU2 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU2.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile_RPDU2.Name)" -force
 $tmpFile_RPDU2 = "$($tmpFile_RPDU2.Name).csv"
 
 $tmpFile_RPDU3 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU3.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile_RPDU3.Name)" -force
 $tmpFile_RPDU3 = "$($tmpFile_RPDU3.Name).csv"
 
 $tmpFile_RPDU4 = New-TemporaryFile
-Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU4.Name)" -force
+Remove-Item -path "$($ENV:Temp)/$($tmpFile_RPDU4.Name)" -force
 $tmpFile_RPDU4 = "$($tmpFile_RPDU4.Name).csv"
 
 if ($use_ssh){
@@ -134,6 +139,21 @@ while ($currentLine -lt $totalLines){
 }
 Write-Output "100 %"
 
+if ($debug){
+    echo "Generating graphs"
+}
+
+if ($debug){
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU1) $($savePath1)"
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU2) $($savePath2)"
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU3) $($savePath3)"
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU4) $($savePath4)"
+}
+python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU1)" "$($savePath1)"
+python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU2)" "$($savePath2)"
+python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU3)" "$($savePath3)"
+python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU4)" "$($savePath4)"
+
 # TMP files
 # $tmpFile1.Name = original downloaded file
 # $tmpFile2.Name = file without first 14 lines
@@ -151,6 +171,11 @@ if ($debug){
     Write-Output "$($ENV:Temp)\$($tmpFile_RPDU2)"
     Write-Output "$($ENV:Temp)\$($tmpFile_RPDU3)"
     Write-Output "$($ENV:Temp)\$($tmpFile_RPDU4)"
+
+    Write-Output "$($savePath1)"
+    Write-Output "$($savePath2)"
+    Write-Output "$($savePath3)"
+    Write-Output "$($savePath4)"
 
     if ($delete_tmp_files){
         $null = Read-Host -Prompt 'Press ENTER to exit and delete temp files'
