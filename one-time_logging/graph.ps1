@@ -11,21 +11,20 @@ $user = "admin"
 
 #script
 
-echo "Graph from PDU Schneider v1.0"
-echo "created by Filip Komárek"
-echo ""
-echo "This version downloading log directly from PDU. If you want use server to periodic downloading logs for longer time, use periodic_logging version."
-echo ""
+Write-Output "Graph from PDU Schneider v1.0"
+Write-Output "created by Filip Komárek"
+Write-Output ""
+Write-Output "This version downloading log directly from PDU. If you want use server to periodic downloading logs for longer time, use periodic_logging version."
+Write-Output ""
 
 if ($host.Version.Major -lt 7){
-    echo ""
-    echo "This script is created for Powershell 7+."
-    echo "The script may still work, but problems may occur."
-    echo ""
+    Write-Output ""
+    Write-Output "This script is created for Powershell 7+."
+    Write-Output "The script may still work, but problems may occur."
+    Write-Output ""
 }
 
 # tmp files for everything
-
 $tmpFile1 = New-TemporaryFile
 Remove-Item -path "$($ENV:Temp)\$($tmpFile1.Name)" -force
 
@@ -37,7 +36,6 @@ Remove-Item -path "$($ENV:Temp)\$($tmpFile3.Name)" -force
 $tmpFile3 = "$($tmpFile3.Name).csv"
 
 # tmp files for every one RPDU
-
 $tmpFile_RPDU1 = New-TemporaryFile
 Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU1.Name)" -force
 $tmpFile_RPDU1 = "$($tmpFile_RPDU1.Name).csv"
@@ -56,7 +54,7 @@ $tmpFile_RPDU4 = "$($tmpFile_RPDU4.Name).csv"
 
 if ($use_ssh){
     if ($use_config){
-        echo "Using config"
+        Write-Output "Using config"
     }
     else{
         $server = Read-Host -Prompt 'Enter IP of server'
@@ -69,7 +67,7 @@ if ($use_ssh){
 }
 else{
     if ($use_config){
-        echo "Using config"
+        Write-Output "Using config"
     }
     else{
         $server = Read-Host -Prompt 'Enter IP of server'
@@ -97,41 +95,44 @@ Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 14 | Out-File
 $currentLine = 0
 $totalLines = (Get-Content "$($ENV:Temp)\$($tmpFile3)").Length
 if ($debug){
-    echo "totalLines = $($totalLines)"
+    Write-Output "totalLines = $($totalLines)"
 }
 
-echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU1)"
-echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU2)"
-echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU3)"
-echo "Date;Time;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU4)"
+Write-Output "Splitting RPDUs into separate files."
 
-echo "Splitting RPDUs into separate files."
+Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU1)"
+Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU2)"
+Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU3)"
+Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" >> "$($ENV:Temp)\$($tmpFile_RPDU4)"
 
 $currentPercentage = 0
 $nextPercentage = 0
 $tenPercent = $totalLines / 10
 while ($currentLine -lt $totalLines){
     if ($debug){
-        echo "currentLine = $($currentLine)"
+        Write-Output "currentLine = $($currentLine)"
     }
     if ($currentLine -eq $nextPercentage){
-        echo "$($currentPercentage) %"
+        Write-Output "$($currentPercentage) %"
         $currentPercentage = $currentPercentage + 10
         $nextPercentage = $nextPercentage + $tenPercent
     }
-    $currentData = Get-Content "$($ENV:Temp)\$($tmpFile3)" | Select -Index $currentLine
+    $currentData = Get-Content "$($ENV:Temp)\$($tmpFile3)" | Select-Object -Index $currentLine
     $array = $currentData-split ";"
     if ($array.Length -ne 31){
-        echo "Warning: There is something bad about that data.txt file, but lets try continue anyway..."
+        Write-Output "Warning: There is something bad about that data.txt file, but lets try continue anyway..."
     }
 
-    echo "$($array[0]);$($array[1]);$($array[2]);$($array[3]);$($array[4]);$($array[7]);$($array[8]);" >> "$($ENV:Temp)\$($tmpFile_RPDU1)"
-    echo "$($array[0]);$($array[1]);$($array[9]);$($array[10]);$($array[11]);$($array[14]);$($array[15]);" >> "$($ENV:Temp)\$($tmpFile_RPDU2)"
-    echo "$($array[0]);$($array[1]);$($array[16]);$($array[17]);$($array[18]);$($array[21]);$($array[22]);" >> "$($ENV:Temp)\$($tmpFile_RPDU3)"
-    echo "$($array[0]);$($array[1]);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" >> "$($ENV:Temp)\$($tmpFile_RPDU4)"
+    $dateArray = $array[0].split("/")
+    $date = "$($dateArray[2])/$($dateArray[0])/$($dateArray[1]) $($array[1])"
+
+    Write-Output "$($date);$($array[2]);$($array[3]);$($array[4]);$($array[7]);$($array[8]);" >> "$($ENV:Temp)\$($tmpFile_RPDU1)"
+    Write-Output "$($date);$($array[9]);$($array[10]);$($array[11]);$($array[14]);$($array[15]);" >> "$($ENV:Temp)\$($tmpFile_RPDU2)"
+    Write-Output "$($date);$($array[16]);$($array[17]);$($array[18]);$($array[21]);$($array[22]);" >> "$($ENV:Temp)\$($tmpFile_RPDU3)"
+    Write-Output "$($date);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" >> "$($ENV:Temp)\$($tmpFile_RPDU4)"
     $currentLine++
 }
-echo "100 %"
+Write-Output "100 %"
 
 # TMP files
 # $tmpFile1.Name = original downloaded file
@@ -143,13 +144,13 @@ echo "100 %"
 # tmpFile_RPDU4 = RPDU4
 
 if ($debug){
-    echo "$($ENV:Temp)\$($tmpFile1.Name)"
-    echo "$($ENV:Temp)\$($tmpFile2.Name)"
-    echo "$($ENV:Temp)\$($tmpFile3)"
-    echo "$($ENV:Temp)\$($tmpFile_RPDU1)"
-    echo "$($ENV:Temp)\$($tmpFile_RPDU2)"
-    echo "$($ENV:Temp)\$($tmpFile_RPDU3)"
-    echo "$($ENV:Temp)\$($tmpFile_RPDU4)"
+    Write-Output "$($ENV:Temp)\$($tmpFile1.Name)"
+    Write-Output "$($ENV:Temp)\$($tmpFile2.Name)"
+    Write-Output "$($ENV:Temp)\$($tmpFile3)"
+    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU1)"
+    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU2)"
+    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU3)"
+    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU4)"
 
     if ($delete_tmp_files){
         $null = Read-Host -Prompt 'Press ENTER to exit and delete temp files'
@@ -165,6 +166,6 @@ if ($delete_tmp_files){
     Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU3)" -force
     Remove-Item -path "$($ENV:Temp)\$($tmpFile_RPDU4)" -force
     if ($debug){
-        echo "Temp files deleted."
+        Write-Output "Temp files deleted."
     }
 }
