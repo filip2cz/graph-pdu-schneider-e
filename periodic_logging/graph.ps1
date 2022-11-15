@@ -54,6 +54,7 @@ if ($debug) {
     Write-Output "Converted to csv"
 }
 
+$totalLines = (Get-Content "$($workingPath)/tmp3.csv").Length
 $currentPercentage = 0
 $nextPercentage = 0
 $tenPercent = $totalLines / 10
