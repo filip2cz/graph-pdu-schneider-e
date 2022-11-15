@@ -2,8 +2,8 @@
 $debug = $false
 $use_ssh = $false #if false, use ftp to transfer files from server; ssh is possible only when keys are installed on server and PDU!
 $path = "/data.txt"
-$savePath = "C:\Users\fkomarek\Desktop\tmp\"
-$workingPath = "C:\Users\fkomarek\Desktop\tmp\"
+$savePath = "/home/filip/savedirectory"
+$workingPath = "/home/filip/workingdirectory"
 $pythonPartPath = "./python_part/grafovani.py"
 
 $server = "192.168.1.25"
@@ -56,13 +56,13 @@ while ($true) {
     }
 
     #delete first 14 lines
-    Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 14 | Out-File "$($workingPath)/tmp2.tmp"
+    Get-Content "$($workingPath)/tmp1.tmp" | Select-Object -Skip 14 | Out-File "$($workingPath)/tmp2.tmp"
     if ($debug) {
         Write-Output "First 14 lines deleted"
     }
 
     #convert to csv
-    (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
+    (Get-Content "$($workingPath)/tmp2.tmp") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
     if ($debug) {
         Write-Output "Converted to csv"
     }
