@@ -67,7 +67,7 @@ while ($currentLine -lt $totalLines) {
         $currentPercentage = $currentPercentage + 10
         $nextPercentage = $nextPercentage + $tenPercent
     }
-    $currentData = Get-Content "$($ENV:Temp)\$($tmpFile3)" | Select-Object -Index $currentLine
+    $currentData = Get-Content "$($workingPath)/tmp3.csv" | Select-Object -Index $currentLine
     $array = $currentData -split ";"
     if ($array.Length -ne 31) {
         Write-Output "Warning: There is something bad about that data.txt file, but lets try continue anyway..."
