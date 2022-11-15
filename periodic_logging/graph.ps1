@@ -18,7 +18,7 @@ Write-Output ""
 Write-Output "This version periodicaly downloading logs for longer time, if you want one time graph, use one-time_logging version."
 Write-Output ""
 
-if ($host.Version.Major -lt 7){
+if ($host.Version.Major -lt 7) {
     Write-Output ""
     Write-Output "This script is created for Powershell 7+."
     Write-Output "The script may still work, but problems may occur."
@@ -26,59 +26,59 @@ if ($host.Version.Major -lt 7){
 }
 
 
-while ($true){
+while ($true) {
 
-    if ($debug){
+    if ($debug) {
         Write-Output "Creating tmp files"
     }
 
-    if ($debug){
+    if ($debug) {
         Write-Output "tmp files:"
         Write-Output "$($workingPath)/tmp1.tmp"
         Write-Output "$($workingPath)/tmp2.tmp"
         Write-Output "$($workingPath)/tmp3.csv"
     }
     
-    if ($use_ssh){
+    if ($use_ssh) {
         Write-Output "SSH is not implemented yet, use FTP instead."
     }
     else {
         #ftp download
-        if ($debug){
+        if ($debug) {
             Write-Output "Starting downloading through FTP"
         }
         $client = New-Object System.Net.WebClient
         $client.Credentials = New-Object System.Net.NetworkCredential($user, $passwd)
         $client.DownloadFile("ftp://$($server)/$($path)", "$($workingPath)/tmp1.tmp")
-        if ($debug){
+        if ($debug) {
             Write-Output "File downloaded through FTP"
         }
     }
 
     #delete first 14 lines
     Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 14 | Out-File "$($workingPath)/tmp2.tmp"
-    if ($debug){
+    if ($debug) {
         Write-Output "First 14 lines deleted"
     }
 
     #convert to csv
     (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.tmp"
-    if ($debug){
+    if ($debug) {
         Write-Output "Converted to csv"
     }
 
     $currentData = Get-Content "$($workingPath)/tmp3.tmp" | Select-Object -Index 0
-    if ($debug){
+    if ($debug) {
         Write-Output "First line of csv loaded into variable"
     }
-    $array = $currentData-split ";"
-    if ($debug){
+    $array = $currentData -split ";"
+    if ($debug) {
         Write-Output "First line of csv splited into array"
     }
 
     $dateArray = $array[0].split("/")
     $date = "$($dateArray[2])/$($dateArray[0])/$($dateArray[1]) $($array[1])"
-    if ($debug){
+    if ($debug) {
         Write-Output "Date repaired"
     }
 
@@ -86,7 +86,7 @@ while ($true){
     Write-Output "$($date);$($array[9]);$($array[10]);$($array[11]);$($array[14]);$($array[15]);" >> "$($workingPath)\RPDU2_working.csv"
     Write-Output "$($date);$($array[16]);$($array[17]);$($array[18]);$($array[21]);$($array[22]);" >> "$($workingPath)\RPDU3_working.csv"
     Write-Output "$($date);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" >> "$($workingPath)\RPDU4_working.csv"
-    if ($debug){
+    if ($debug) {
         Write-Output "Data saved to working files"
     }
 
@@ -110,22 +110,17 @@ while ($true){
 
     if ($debug) {
         Write-Output "tmp files:"
-        Write-Output "$($ENV:Temp)/$($tmpFile1.Name)"
-        Write-Output "$($ENV:Temp)/$($tmpFile2.Name)"
-        Write-Output "$($ENV:Temp)/$($tmpFile3)"
+        Write-Output "$($workingPath)/tmp1.tmp"
+        Write-Output "$($workingPath)/tmp2.tmp"
+        Write-Output "$($workingPath)/tmp3.csv"
     }
 
     #remove old temp files
-    if (-Not ($debug)){
-        Remove-Item -path "$($ENV:Temp)/$($tmpFile1.Name)" -force
-        Remove-Item -path "$($ENV:Temp)/$($tmpFile2.Name)" -force
-        Remove-Item -path "$($ENV:Temp)/$($tmpFile3)" -force
-    }
-    else {
-        Write-Output "debug mode is on, tmp files are not deleted"
-    }
+    Remove-Item -path "$($workingPath)/tmp1.tmp" -force
+    Remove-Item -path "$($workingPath)/tmp2.tmp" -force
+    Remove-Item -path "$($workingPath)/tmp3.csv" -force
 
-    if ($debug){
+    if ($debug) {
         Write-Output "Done, lets wait 10 minutes"
     }
     #wait 10 minutes
