@@ -1,18 +1,18 @@
 #config
-$debug = $true
-$delete_tmp_files = $false
+$debug = $false
+$delete_tmp_files = $true
 $use_ssh = $false #if false, use ftp to transfer files from server
 $ask_for_path = $false #ask for path, or use path from config
 $path = "/data.txt"
+$pythonPartPath = "./python_part/grafovani.py"
+
+$use_config = $false # use config below. Config upper will be used anyway
+$server = "192.168.1.25"
+$user = "admin"
 $savePath1 = "C:\Users\fkomarek\Desktop\graph1.png"
 $savePath2 = "C:\Users\fkomarek\Desktop\graph2.png"
 $savePath3 = "C:\Users\fkomarek\Desktop\graph3.png"
 $savePath4 = "C:\Users\fkomarek\Desktop\graph4.png"
-$pythonPartPath = "./python_part/grafovani.py"
-
-$use_config = $true # use config below. Config upper will be used anyway
-$server = "10.17.89.55"
-$user = "admin"
 
 #script
 
@@ -140,7 +140,7 @@ while ($currentLine -lt $totalLines){
 Write-Output "100 %"
 
 if ($debug){
-    echo "Generating graphs"
+    Write-Output "Generating graphs"
 }
 
 if ($debug){
@@ -149,9 +149,28 @@ if ($debug){
     Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU3) $($savePath3)"
     Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU4) $($savePath4)"
 }
+if ($debug){
+    Write-Output ""
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU1) $($savePath1)"
+}
 python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU1)" "$($savePath1)"
+Start-Sleep 3
+if ($debug){
+    Write-Output ""
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU2) $($savePath2)"
+}
 python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU2)" "$($savePath2)"
+Start-Sleep 3
+if ($debug){
+    Write-Output ""
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU3) $($savePath3)"
+}
 python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU3)" "$($savePath3)"
+Start-Sleep 3
+if ($debug){
+    Write-Output ""
+    Write-Output "python3 $($pythonPartPath) $($ENV:Temp)/$($tmpFile_RPDU4) $($savePath4)"
+}
 python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU4)" "$($savePath4)"
 
 # TMP files
@@ -164,13 +183,13 @@ python3 $pythonPartPath "$($ENV:Temp)/$($tmpFile_RPDU4)" "$($savePath4)"
 # tmpFile_RPDU4 = RPDU4
 
 if ($debug){
-    Write-Output "$($ENV:Temp)\$($tmpFile1.Name)"
-    Write-Output "$($ENV:Temp)\$($tmpFile2.Name)"
-    Write-Output "$($ENV:Temp)\$($tmpFile3)"
-    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU1)"
-    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU2)"
-    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU3)"
-    Write-Output "$($ENV:Temp)\$($tmpFile_RPDU4)"
+    Write-Output "Downloaded file: $($ENV:Temp)\$($tmpFile1.Name)"
+    Write-Output "Downloaded file without first 13 lines: $($ENV:Temp)\$($tmpFile2.Name)"
+    Write-Output "CSV file: $($ENV:Temp)\$($tmpFile3)"
+    Write-Output "CSV file of RPDU1: $($ENV:Temp)\$($tmpFile_RPDU1)"
+    Write-Output "CSV file of RPDU2: $($ENV:Temp)\$($tmpFile_RPDU2)"
+    Write-Output "CSV file of RPDU3: $($ENV:Temp)\$($tmpFile_RPDU3)"
+    Write-Output "CSV file of RPDU4: $($ENV:Temp)\$($tmpFile_RPDU4)"
 
     Write-Output "$($savePath1)"
     Write-Output "$($savePath2)"
