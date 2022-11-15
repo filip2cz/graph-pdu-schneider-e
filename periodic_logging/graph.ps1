@@ -31,22 +31,12 @@ while ($true){
     if ($debug){
         Write-Output "Creating tmp files"
     }
-    #create temp files
-    $tmpFile1 = New-TemporaryFile
-    Remove-Item -path "$($ENV:Temp)/$($tmpFile1.Name)" -force
-
-    $tmpFile2 = New-TemporaryFile
-    Remove-Item -path "$($ENV:Temp)/$($tmpFile2.Name)" -force
-
-    $tmpFile3 = New-TemporaryFile
-    Remove-Item -path "$($ENV:Temp)/$($tmpFile3.Name)" -force
-    $tmpFile3 = "$($tmpFile3.Name).csv"
 
     if ($debug){
         Write-Output "tmp files:"
-        Write-Output "$($ENV:Temp)/$($tmpFile1.Name)"
-        Write-Output "$($ENV:Temp)/$($tmpFile2.Name)"
-        Write-Output "$($ENV:Temp)/$($tmpFile3)"
+        Write-Output "$($workingPath)/tmp1.tmp"
+        Write-Output "$($workingPath)/tmp2.tmp"
+        Write-Output "$($workingPath)/tmp3.csv"
     }
     
     if ($use_ssh){
@@ -59,25 +49,25 @@ while ($true){
         }
         $client = New-Object System.Net.WebClient
         $client.Credentials = New-Object System.Net.NetworkCredential($user, $passwd)
-        $client.DownloadFile("ftp://$($server)/$($path)", "$($ENV:Temp)\$($tmpFile1.Name)")
+        $client.DownloadFile("ftp://$($server)/$($path)", "$($workingPath)/tmp1.tmp")
         if ($debug){
             Write-Output "File downloaded through FTP"
         }
     }
 
     #delete first 14 lines
-    Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 14 | Out-File "$($ENV:Temp)\$($tmpFile2.Name)"
+    Get-Content "$($ENV:Temp)\$($tmpFile1.Name)" | Select-Object -Skip 14 | Out-File "$($workingPath)/tmp2.tmp"
     if ($debug){
         Write-Output "First 14 lines deleted"
     }
 
     #convert to csv
-    (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($ENV:Temp)\$($tmpFile3)"
+    (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.tmp"
     if ($debug){
         Write-Output "Converted to csv"
     }
 
-    $currentData = Get-Content "$($ENV:Temp)\$($tmpFile3)" | Select-Object -Index 0
+    $currentData = Get-Content "$($workingPath)/tmp3.tmp" | Select-Object -Index 0
     if ($debug){
         Write-Output "First line of csv loaded into variable"
     }
