@@ -62,12 +62,12 @@ while ($true) {
     }
 
     #convert to csv
-    (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.tmp"
+    (Get-Content "$($ENV:Temp)\$($tmpFile2.Name)") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
     if ($debug) {
         Write-Output "Converted to csv"
     }
 
-    $currentData = Get-Content "$($workingPath)/tmp3.tmp" | Select-Object -Index 0
+    $currentData = Get-Content "$($workingPath)/tmp3.csv" | Select-Object -Index 0
     if ($debug) {
         Write-Output "First line of csv loaded into variable"
     }
