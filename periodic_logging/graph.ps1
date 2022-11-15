@@ -95,6 +95,15 @@ Get-Content "$($workingPath)\RPDU3_working.csv" >> "$($workingPath)/rpdu3.csv"
 Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu4.csv"
 Get-Content "$($workingPath)\RPDU4_working.csv" >> "$($workingPath)/rpdu4.csv"
 
+#python part
+if ($debug) {
+    Write-Output "Starting python part"
+}
+python3 $pythonPartPath "$($workingPath)/rpdu1.csv" "$($savePath)/rpdu1.png"
+python3 $pythonPartPath "$($workingPath)/rpdu2.csv" "$($savePath)/rpdu2.png"
+python3 $pythonPartPath "$($workingPath)/rpdu3.csv" "$($savePath)/rpdu3.png"
+python3 $pythonPartPath "$($workingPath)/rpdu4.csv" "$($savePath)/rpdu4.png"
+
 Write_Output "Normal part"
 sleep 600
 while ($true) {
