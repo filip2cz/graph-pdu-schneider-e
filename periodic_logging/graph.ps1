@@ -105,8 +105,8 @@ python3 $pythonPartPath "$($workingPath)/rpdu2.csv" "$($savePath)/rpdu2.png"
 python3 $pythonPartPath "$($workingPath)/rpdu3.csv" "$($savePath)/rpdu3.png"
 python3 $pythonPartPath "$($workingPath)/rpdu4.csv" "$($savePath)/rpdu4.png"
 
-Write_Output "Normal part"
-sleep 600
+Write-Output "Normal part"
+Start-Sleep 600
 while ($true) {
 
     if ($debug) {
@@ -200,6 +200,24 @@ while ($true) {
     Remove-Item -path "$($workingPath)/tmp1.tmp" -force
     Remove-Item -path "$($workingPath)/tmp2.tmp" -force
     Remove-Item -path "$($workingPath)/tmp3.csv" -force
+
+    #delete last line of working files, if it is longet than 4000
+    $lines = Get-Content "$($workingPath)\RPDU1_working.csv" | Measure-Object -Line
+    if ($lines.Count -gt 4000) {
+        Get-Content "$($workingPath)\RPDU1_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU1_working.csv"
+    }
+    $lines = Get-Content "$($workingPath)\RPDU2_working.csv" | Measure-Object -Line
+    if ($lines.Count -gt 4000) {
+        Get-Content "$($workingPath)\RPDU2_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU2_working.csv"
+    }
+    $lines = Get-Content "$($workingPath)\RPDU3_working.csv" | Measure-Object -Line
+    if ($lines.Count -gt 4000) {
+        Get-Content "$($workingPath)\RPDU3_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU3_working.csv"
+    }
+    $lines = Get-Content "$($workingPath)\RPDU4_working.csv" | Measure-Object -Line
+    if ($lines.Count -gt 4000) {
+        Get-Content "$($workingPath)\RPDU4_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU4_working.csv"
+    }
 
     if ($debug) {
         Write-Output "Done, lets wait 10 minutes"
