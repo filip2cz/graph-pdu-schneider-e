@@ -111,6 +111,7 @@ if ($setup) {
 }
 
 Write-Output "Normal part"
+Get-Date
 Start-Sleep 600
 while ($true) {
 
@@ -237,6 +238,7 @@ while ($true) {
     }
 
     if ($debug) {
+        Get-Date
         Write-Output "Done, lets wait 10 minutes"
     }
     #wait 10 minutes
