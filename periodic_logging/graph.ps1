@@ -1,5 +1,5 @@
 #config
-$debug = $true
+$debug = $false
 $use_ssh = $false #if false, use ftp to transfer files from server; ssh is possible only when keys are installed on server and PDU!
 $path = "/data.txt"
 $savePath = "/home/administrator/savedirectory"
