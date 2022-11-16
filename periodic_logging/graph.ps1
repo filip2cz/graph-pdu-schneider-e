@@ -60,6 +60,7 @@ if ($setup) {
     $currentPercentage = 0
     $nextPercentage = 0
     $tenPercent = $totalLines / 10
+    $currentLine = 0
     while ($currentLine -lt $totalLines) {
         if ($debug) {
             Write-Output "currentLine = $($currentLine)"
