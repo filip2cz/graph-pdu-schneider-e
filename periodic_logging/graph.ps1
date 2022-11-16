@@ -5,6 +5,7 @@ $path = "/data.txt"
 $savePath = "/home/filip/savedirectory"
 $workingPath = "/home/filip/workingdirectory"
 $pythonPartPath = "./python_part/grafovani.py"
+$setup = $false
 
 $server = "192.168.1.25"
 $user = "admin"
@@ -163,10 +164,22 @@ while ($true) {
         Write-Output "Date repaired"
     }
 
-    Write-Output "$($date);$($array[2]);$($array[3]);$($array[4]);$($array[7]);$($array[8]);" >> "$($workingPath)\RPDU1_working.csv"
-    Write-Output "$($date);$($array[9]);$($array[10]);$($array[11]);$($array[14]);$($array[15]);" >> "$($workingPath)\RPDU2_working.csv"
-    Write-Output "$($date);$($array[16]);$($array[17]);$($array[18]);$($array[21]);$($array[22]);" >> "$($workingPath)\RPDU3_working.csv"
-    Write-Output "$($date);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" >> "$($workingPath)\RPDU4_working.csv"
+    $oldRpdu1 = Get-Content "$($workingPath)/RPDU1_working.csv" -Raw
+    Write-Output "$($date);$($array[2]);$($array[3]);$($array[4]);$($array[7]);$($array[8]);" > "$($workingPath)\RPDU1_working.csv"
+    Write-Output $oldRpdu1 >> "$($workingPath)\RPDU1_working.csv"
+
+    $oldRpdu2 = Get-Content "$($workingPath)/RPDU2_working.csv" -Raw
+    Write-Output "$($date);$($array[9]);$($array[10]);$($array[11]);$($array[14]);$($array[15]);" > "$($workingPath)\RPDU2_working.csv"
+    Write-Output $oldRpdu2 >> "$($workingPath)\RPDU2_working.csv"
+
+    $oldRpdu3 = Get-Content "$($workingPath)/RPDU3_working.csv" -Raw
+    Write-Output "$($date);$($array[16]);$($array[17]);$($array[18]);$($array[21]);$($array[22]);" > "$($workingPath)\RPDU3_working.csv"
+    Write-Output $oldRpdu3 >> "$($workingPath)\RPDU3_working.csv"
+
+    $oldRpdu4 = Get-Content "$($workingPath)/RPDU4_working.csv" -Raw
+    Write-Output "$($date);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" > "$($workingPath)\RPDU4_working.csv"
+    Write-Output $oldRpdu4 >> "$($workingPath)\RPDU4_working.csv"
+
     if ($debug) {
         Write-Output "Data saved to working files"
     }
