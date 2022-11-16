@@ -1,5 +1,5 @@
 #config
-$debug = $true
+$debug = $false
 $delete_tmp_files = $false
 $use_ssh = $false #if false, use ftp to transfer files from server
 $ask_for_path = $false #ask for path, or use path from config
