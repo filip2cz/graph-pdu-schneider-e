@@ -2,8 +2,8 @@
 $debug = $true
 $use_ssh = $false #if false, use ftp to transfer files from server; ssh is possible only when keys are installed on server and PDU!
 $path = "/data.txt"
-$savePath = "/home/filip/savedirectory"
-$workingPath = "/home/filip/workingdirectory"
+$savePath = "/home/administrator/savedirectory"
+$workingPath = "/home/administrator/workingdirectory"
 $pythonPartPath = "./python_part/grafovani.py"
 $setup = $false
 
