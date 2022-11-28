@@ -1,15 +1,20 @@
-#config
+#config is in the file conf.json
+#you can change the path to the file
+$config = Get-Content -Path ./config.json | ConvertFrom-Json
+
+#other config
 $debug = $false
 $use_ssh = $false #if false, use ftp to transfer files from server; ssh is possible only when keys are installed on server and PDU!
-$path = "/data.txt"
-$savePath = "/home/administrator/savedirectory"
-$workingPath = "/home/administrator/workingdirectory"
-$pythonPartPath = "./python_part/grafovani.py"
 $setup = $false
 
-$server = "192.168.1.25"
-$user = "admin"
-$passwd = "password"
+#get data from config
+$path = $config.path
+$savePath = $config.savePath
+$workingPath = $config.workingPath
+$pythonPartPath = $config.pythonPartPath
+$server = $config.server
+$user = $config.user
+$passwd = $config.passwd
 
 #script
 
