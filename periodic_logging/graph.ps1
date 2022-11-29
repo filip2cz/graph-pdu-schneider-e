@@ -2,12 +2,14 @@
 #you can change the path to the file
 $config = Get-Content -Path ./config.json | ConvertFrom-Json
 
-#other config
+#get data from config, do not change please
 $debug = $false
-$use_ssh = $false #if false, use ftp to transfer files from server; ssh is possible only when keys are installed on server and PDU!
+$use_ssh = $false
 $setup = $false
 
-#get data from config
+$debug = $config.debug
+$use_ssh = $config.use_ssh
+$setup = $config.setup
 $path = $config.path
 $savePath = $config.savePath
 $workingPath = $config.workingPath
@@ -31,33 +33,33 @@ if ($host.Version.Major -lt 7) {
     Write-Output ""
 }
 
-if ($setup) {
+if ($setup -eq $true) {
     #setup part
     Write-Output "Setup part"
 
-    if ($use_ssh) {
+    if ($use_ssh -eq $true) {
         Write-Output "SSH is not implemented yet, use FTP instead."
     }
     else {
         #ftp download
-        if ($debug) {
+        if ($debug -eq $true) {
             Write-Output "Starting downloading through FTP"
         }
         $client = New-Object System.Net.WebClient
         $client.Credentials = New-Object System.Net.NetworkCredential($user, $passwd)
         $client.DownloadFile("ftp://$($server)/$($path)", "$($workingPath)/tmp1.tmp")
-        if ($debug) {
+        if ($debug -eq $true) {
             Write-Output "File downloaded through FTP"
         }
     }
 
     Get-Content "$($workingPath)/tmp1.tmp" | Select-Object -Skip 14 | Out-File "$($workingPath)/tmp2.tmp"
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "First 14 lines deleted"
     }
 
 (Get-Content "$($workingPath)/tmp2.tmp") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Converted to csv"
     }
 
@@ -67,7 +69,7 @@ if ($setup) {
     $tenPercent = $totalLines / 10
     $currentLine = 0
     while ($currentLine -lt $totalLines) {
-        if ($debug) {
+        if ($debug -eq $true) {
             Write-Output "currentLine = $($currentLine)"
         }
         if ($currentLine -eq $nextPercentage) {
@@ -105,7 +107,7 @@ if ($setup) {
     Get-Content "$($workingPath)\RPDU4_working.csv" >> "$($workingPath)/rpdu4.csv"
 
     #python part
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Starting python part"
     }
     python3 $pythonPartPath "$($workingPath)/rpdu1.csv" "$($savePath)/rpdu1.png"
@@ -120,57 +122,57 @@ Get-Date
 Start-Sleep 600
 while ($true) {
 
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Creating tmp files"
     }
 
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "tmp files:"
         Write-Output "$($workingPath)/tmp1.tmp"
         Write-Output "$($workingPath)/tmp2.tmp"
         Write-Output "$($workingPath)/tmp3.csv"
     }
     
-    if ($use_ssh) {
+    if ($use_ssh -eq $true) {
         Write-Output "SSH is not implemented yet, use FTP instead."
     }
     else {
         #ftp download
-        if ($debug) {
+        if ($debug -eq $true) {
             Write-Output "Starting downloading through FTP"
         }
         $client = New-Object System.Net.WebClient
         $client.Credentials = New-Object System.Net.NetworkCredential($user, $passwd)
         $client.DownloadFile("ftp://$($server)/$($path)", "$($workingPath)/tmp1.tmp")
-        if ($debug) {
+        if ($debug -eq $true) {
             Write-Output "File downloaded through FTP"
         }
     }
 
     #delete first 14 lines
     Get-Content "$($workingPath)/tmp1.tmp" | Select-Object -Skip 14 | Out-File "$($workingPath)/tmp2.tmp"
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "First 14 lines deleted"
     }
 
     #convert to csv
     (Get-Content "$($workingPath)/tmp2.tmp") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Converted to csv"
     }
 
     $currentData = Get-Content "$($workingPath)/tmp3.csv" | Select-Object -Index 0
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "First line of csv loaded into variable"
     }
     $array = $currentData -split ";"
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "First line of csv splited into array"
     }
 
     $dateArray = $array[0].split("/")
     $date = "$($dateArray[2])/$($dateArray[0])/$($dateArray[1]) $($array[1])"
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Date repaired"
     }
 
@@ -190,7 +192,7 @@ while ($true) {
     Write-Output "$($date);$($array[23]);$($array[24]);$($array[25]);$($array[28]);$($array[29]);" > "$($workingPath)\RPDU4_working.csv"
     Write-Output $oldRpdu4 >> "$($workingPath)\RPDU4_working.csv"
 
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Data saved to working files"
     }
 
@@ -206,12 +208,12 @@ while ($true) {
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu4.csv"
     Get-Content "$($workingPath)\RPDU4_working.csv" >> "$($workingPath)/rpdu4.csv"
 
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Working files saved to csv"
     }
 
     #python part
-    if ($debug) {
+    if ($debug -eq $true) {
         Write-Output "Starting python part"
     }
     python3 $pythonPartPath "$($workingPath)/rpdu1.csv" "$($savePath)/rpdu1.png"
@@ -242,7 +244,7 @@ while ($true) {
         Get-Content "$($workingPath)\RPDU4_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU4_working.csv"
     }
 
-    if ($debug) {
+    if ($debug -eq $true) {
         Get-Date
         Write-Output "Done, lets wait 10 minutes"
     }

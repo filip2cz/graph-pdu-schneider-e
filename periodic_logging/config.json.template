@@ -1,8 +1,11 @@
 {
+    "debug": "false",
+    "use_ssh": "false",
+    "setup": "false",
     "path": "/data.txt",
     "savePath": "/home/administrator/savedirectory",
-    "workingPath": "/home/administrator/workingdirectory",
-    "pythonPartPath": "./python_part/grafovani.py",
+    "workingPath": "/home/administrator/0/workingdirectory",
+    "pythonPartPath": "/home/administrator/graph-pdu-schneider-e/periodic_logging/python_part/grafovani.py",
     "server": "192.168.1.25",
     "user": "admin",
     "passwd": "password"
