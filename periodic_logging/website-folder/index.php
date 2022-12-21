@@ -10,7 +10,7 @@
 <?php include ("./menu.html"); ?>
 <div class="container">
 
-<h1>Vyberte PDU z menu</h1>
+<h1>Vyberte PDU z menu v pravém horním rohu</h1>
 
 </div>
 </body>
