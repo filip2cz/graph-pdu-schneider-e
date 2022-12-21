@@ -7,6 +7,10 @@
     <title>PDU graphs</title>
 </head>
 <body>
+<?php include ("../menu.html"); ?>
+<div class="container">
+
+
     <p>Update grafů je každých 10 minut (je potřeba reload stránky)</p>
     <p>Maximální nastavená velikost logů (a grafů z nich tvořených) je 4000 řádků (= necelých 28 dní)</p>
     
@@ -21,5 +25,7 @@
 
     <h2>RPDU4</h2>
     <img src="./rpdu4.png" alt="rpdu1-graph" width="50%" height="50%">
+
+</div>
 </body>
 </html>
