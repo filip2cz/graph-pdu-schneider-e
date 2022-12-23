@@ -17,6 +17,7 @@ $pythonPartPath = $config.pythonPartPath
 $server = $config.server
 $user = $config.user
 $passwd = $config.passwd
+#$config.lines
 
 #script
 
@@ -197,16 +198,16 @@ while ($true) {
     }
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu1.csv"
-    Get-Content "$($workingPath)\RPDU1_working.csv" >> "$($workingPath)/rpdu1.csv"
+    Get-Content "$($workingPath)\RPDU1_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu1.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu2.csv"
-    Get-Content "$($workingPath)\RPDU2_working.csv" >> "$($workingPath)/rpdu2.csv"
+    Get-Content "$($workingPath)\RPDU2_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu2.csv"
     
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu3.csv"
-    Get-Content "$($workingPath)\RPDU3_working.csv" >> "$($workingPath)/rpdu3.csv"
+    Get-Content "$($workingPath)\RPDU3_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu3.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu4.csv"
-    Get-Content "$($workingPath)\RPDU4_working.csv" >> "$($workingPath)/rpdu4.csv"
+    Get-Content "$($workingPath)\RPDU4_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu4.csv"
 
     if ($debug -eq $true) {
         Write-Output "Working files saved to csv"
@@ -225,24 +226,6 @@ while ($true) {
     Remove-Item -path "$($workingPath)/tmp1.tmp" -force
     Remove-Item -path "$($workingPath)/tmp2.tmp" -force
     Remove-Item -path "$($workingPath)/tmp3.csv" -force
-
-    #delete last line of working files, if it is longet than 4000
-    $lines = Get-Content "$($workingPath)\RPDU1_working.csv" | Measure-Object -Line
-    if ($lines.Count -gt 4000) {
-        Get-Content "$($workingPath)\RPDU1_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU1_working.csv"
-    }
-    $lines = Get-Content "$($workingPath)\RPDU2_working.csv" | Measure-Object -Line
-    if ($lines.Count -gt 4000) {
-        Get-Content "$($workingPath)\RPDU2_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU2_working.csv"
-    }
-    $lines = Get-Content "$($workingPath)\RPDU3_working.csv" | Measure-Object -Line
-    if ($lines.Count -gt 4000) {
-        Get-Content "$($workingPath)\RPDU3_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU3_working.csv"
-    }
-    $lines = Get-Content "$($workingPath)\RPDU4_working.csv" | Measure-Object -Line
-    if ($lines.Count -gt 4000) {
-        Get-Content "$($workingPath)\RPDU4_working.csv" | Select-Object -Skip 1 | Out-File "$($workingPath)\RPDU4_working.csv"
-    }
 
     if ($debug -eq $true) {
         Get-Date

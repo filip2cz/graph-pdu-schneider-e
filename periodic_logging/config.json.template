@@ -8,5 +8,6 @@
     "pythonPartPath": "/home/administrator/graph-pdu-schneider-e/periodic_logging/python_part/grafovani.py",
     "server": "192.168.1.25",
     "user": "admin",
-    "passwd": "password"
+    "passwd": "password",
+    "lines": 4000
 }

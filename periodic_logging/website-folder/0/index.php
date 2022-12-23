@@ -10,6 +10,7 @@
 <?php include ("../menu.html"); ?>
 <div class="container">
 
+    <h1>ip</h1>
 
     <p>Update grafů je každých 10 minut (je potřeba reload stránky)</p>
     <p>Maximální nastavená velikost logů (a grafů z nich tvořených) je 4000 řádků (= necelých 28 dní)</p>
