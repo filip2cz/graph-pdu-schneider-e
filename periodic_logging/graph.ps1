@@ -59,7 +59,7 @@ if ($setup -eq $true) {
         Write-Output "First 14 lines deleted"
     }
 
-(Get-Content "$($workingPath)/tmp2.tmp") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
+    (Get-Content "$($workingPath)/tmp2.tmp") -replace “`t”, ";" | Set-Content "$($workingPath)/tmp3.csv"
     if ($debug -eq $true) {
         Write-Output "Converted to csv"
     }
@@ -115,11 +115,11 @@ if ($setup -eq $true) {
     python3 $pythonPartPath "$($workingPath)/rpdu2.csv" "$($savePath)/rpdu2.png"
     python3 $pythonPartPath "$($workingPath)/rpdu3.csv" "$($savePath)/rpdu3.png"
     python3 $pythonPartPath "$($workingPath)/rpdu4.csv" "$($savePath)/rpdu4.png"
-}
 
-Write-Output "Normal part"
-Get-Date
-Start-Sleep 600
+    Write-Output "Normal part"
+    Get-Date
+    Start-Sleep 600
+}
 while ($true) {
 
     if ($debug -eq $true) {
