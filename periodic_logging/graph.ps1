@@ -120,6 +120,12 @@ if ($setup -eq $true) {
     Get-Date
     Start-Sleep 600
 }
+
+if ($config.setup -eq $false) {
+    Write-Output "Setup is disabled, starting normal part"
+}
+
+#normal part
 while ($true) {
 
     if ($debug -eq $true) {
@@ -204,16 +210,16 @@ while ($true) {
 
     #add first line
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu1.csv"
-    Write-Output "$($workingPath)/rpdu1-work2.csv" >> "$($workingPath)/rpdu1.csv"
+    Get-Content "$($workingPath)/rpdu1-work2.csv" >> "$($workingPath)/rpdu1.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu2.csv"
-    Write-Output "$($workingPath)/rpdu2-work2.csv" >> "$($workingPath)/rpdu2.csv"
+    Get-Content "$($workingPath)/rpdu2-work2.csv" >> "$($workingPath)/rpdu2.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu3.csv"
-    Write-Output "$($workingPath)/rpdu3-work2.csv" >> "$($workingPath)/rpdu3.csv"
+    Get-Content "$($workingPath)/rpdu3-work2.csv" >> "$($workingPath)/rpdu3.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu4.csv"
-    Write-Output "$($workingPath)/rpdu4-work2.csv" >> "$($workingPath)/rpdu4.csv"
+    Get-Content "$($workingPath)/rpdu4-work2.csv" >> "$($workingPath)/rpdu4.csv"
     
     if ($debug -eq $true) {
         Write-Output "Working files saved to csv"
