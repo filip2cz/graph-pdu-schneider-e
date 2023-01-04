@@ -115,7 +115,6 @@ if ($setup -eq $true) {
     python3 $pythonPartPath "$($workingPath)/rpdu2.csv" "$($savePath)/rpdu2.png"
     python3 $pythonPartPath "$($workingPath)/rpdu3.csv" "$($savePath)/rpdu3.png"
     python3 $pythonPartPath "$($workingPath)/rpdu4.csv" "$($savePath)/rpdu4.png"
-
 }
 
 Write-Output "Normal part"
@@ -197,18 +196,25 @@ while ($true) {
         Write-Output "Data saved to working files"
     }
 
+    #only first 4000 lines
+    Get-Content "$($workingPath)\RPDU1_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu1-work2.csv"
+    Get-Content "$($workingPath)\RPDU2_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu2-work2.csv"
+    Get-Content "$($workingPath)\RPDU3_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu3-work2.csv"
+    Get-Content "$($workingPath)\RPDU4_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu4-work2.csv"
+
+    #add first line
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu1.csv"
-    Get-Content "$($workingPath)\RPDU1_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu1.csv"
+    Write-Output "$($workingPath)/rpdu1-work2.csv" >> "$($workingPath)/rpdu1.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu2.csv"
-    Get-Content "$($workingPath)\RPDU2_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu2.csv"
-    
+    Write-Output "$($workingPath)/rpdu2-work2.csv" >> "$($workingPath)/rpdu2.csv"
+
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu3.csv"
-    Get-Content "$($workingPath)\RPDU3_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu3.csv"
+    Write-Output "$($workingPath)/rpdu3-work2.csv" >> "$($workingPath)/rpdu3.csv"
 
     Write-Output "Date;Pwr.kW;Pwr Max.kW;Energy.kWh;Ph I.A;Ph I Max.A" > "$($workingPath)/rpdu4.csv"
-    Get-Content "$($workingPath)\RPDU4_working.csv" | Select-Object -First $config.lines > "$($workingPath)/rpdu4.csv"
-
+    Write-Output "$($workingPath)/rpdu4-work2.csv" >> "$($workingPath)/rpdu4.csv"
+    
     if ($debug -eq $true) {
         Write-Output "Working files saved to csv"
     }
