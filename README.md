@@ -1,4 +1,7 @@
 # graph-pdu-schneider-e
+
+[![wakatime](https://wakatime.com/badge/github/filip2cz/graph-pdu-schneider-e.svg)](https://wakatime.com/badge/github/filip2cz/graph-pdu-schneider-e)
+
 Automation of graphing energy usage etc. from the PDU of Schneider Electric.
 
 ## Something about versions:
