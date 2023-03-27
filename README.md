@@ -1,6 +1,6 @@
 # graph-pdu-schneider-e
 
-[![wakatime](https://wakatime.com/badge/github/filip2cz/graph-pdu-schneider-e.svg)](https://wakatime.com/badge/github/filip2cz/graph-pdu-schneider-e)
+[![wakatime](https://wakatime.com/badge/github/filip2cz/graph-pdu-schneider-e.svg?1)](https://wakatime.com/badge/github/filip2cz/graph-pdu-schneider-e)
 
 Automation of graphing energy usage etc. from the PDU of Schneider Electric.
 
@@ -11,3 +11,6 @@ It connects to the server once, downloads the log and makes a graph. Suitable fo
 
 ### Periodic logging
 It downloads the log at regular itervals, making it possible to make longer-term graphs. Suitable for constant running on servers.
+
+### thank you
+Thanks https://github.com/VIPTrollik for python part
